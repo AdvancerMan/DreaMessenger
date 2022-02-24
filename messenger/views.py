@@ -7,14 +7,14 @@ from messenger import serializers
 
 
 def create_string_response(response, status=200):
-    return Response({"message": response}, status=status)
+    return Response({"detail": response}, status=status)
 
 
 def create_validation_error_response(message, errors, status=400):
     response = {}
     for field, errors in errors.items():
         response[field] = [str(error) for error in errors]
-    return Response({"message": message, "errors": response}, status=status)
+    return Response({"detail": message, "errors": response}, status=status)
 
 
 class HelloView(APIView):
