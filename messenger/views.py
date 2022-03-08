@@ -33,15 +33,14 @@ class RegisterView(APIView):
         if not serializer.is_valid():
             return create_validation_error_response("Invalid data", serializer.errors)
 
-        user = User.objects.create_user(username=serializer.data['username'],
-                                        password=serializer.data['password'],
-                                        first_name=serializer.data['first_name'],
-                                        last_name=serializer.data['last_name'])
-        login(request, user)
+        User.objects.create_user(username=serializer.data['username'],
+                                 password=serializer.data['password'],
+                                 first_name=serializer.data['first_name'],
+                                 last_name=serializer.data['last_name'])
         return create_string_response("Success")
 
 
-class LoginView(APIView):
+class SessionLoginView(APIView):
     permission_classes = []
 
     def post(self, request):
@@ -61,7 +60,7 @@ class LoginView(APIView):
             return create_string_response("Invalid credentials", 400)
 
 
-class LogoutView(APIView):
+class SessionLogoutView(APIView):
     def post(self, request):
         logout(request)
         return create_string_response("Success")
