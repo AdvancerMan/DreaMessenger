@@ -68,6 +68,8 @@ def parse_urls(urls):
 
 CORS_ALLOWED_ORIGINS = parse_urls(os.getenv('CORS_ALLOWED_ORIGINS', None))
 
+CORS_ALLOW_CREDENTIALS = (os.getenv('CORS_ALLOW_CREDENTIALS') == 'True')
+
 ROOT_URLCONF = 'DreaMessenger.urls'
 
 TEMPLATES = [
