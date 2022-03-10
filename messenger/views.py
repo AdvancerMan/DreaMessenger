@@ -69,7 +69,7 @@ class MyDialoguesView(ListAPIView):
     serializer_class = serializers.DialogueResponseSerializer
 
     def get_queryset(self):
-        return self.request.user.dialogues.all()
+        return self.request.user.dialogues.all().order_by('-updated_at')
 
 
 class MessagesView(ListAPIView):
@@ -77,5 +77,7 @@ class MessagesView(ListAPIView):
     serializer_class = serializers.MessageResponseSerializer
 
     def get_queryset(self):
-        pk = int(self.kwargs['id'])
-        return models.Message.objects.filter(dialogue__pk=pk)
+        pk = self.kwargs['pk']
+        return models.Message.objects\
+            .filter(dialogue__pk=pk, dialogue__users=self.request.user)\
+            .order_by('-created_at')

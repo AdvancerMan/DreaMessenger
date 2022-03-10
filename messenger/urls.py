@@ -13,5 +13,5 @@ urlpatterns = [
     path('auth/register/', RegisterView.as_view()),
 
     path('dialogue/my/', MyDialoguesView.as_view()),
-    path('dialogue/<id>/messages/', MessagesView.as_view()),
+    path('dialogue/<int:pk>/messages/', MessagesView.as_view()),
 ]
