@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 
 from messenger import models
 
@@ -40,4 +41,12 @@ class DialogueResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Dialogue
-        fields = ('users',)
+        fields = ('users', 'id')
+
+
+class MessageResponseSerializer(serializers.ModelSerializer):
+    from_user = UserResponseSerializer()
+
+    class Meta:
+        model = models.Message
+        fields = ('from_user', 'picture', 'is_edited', 'edited_at', 'created_at')

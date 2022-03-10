@@ -1,6 +1,6 @@
 from django.urls import path
 
-from messenger.views import HelloView, SessionLoginView, SessionLogoutView, RegisterView, MyDialoguesView
+from messenger.views import HelloView, SessionLoginView, SessionLogoutView, RegisterView, MyDialoguesView, MessagesView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
     path('auth/register/', RegisterView.as_view()),
 
     path('dialogue/my/', MyDialoguesView.as_view()),
+    path('dialogue/<id>/messages/', MessagesView.as_view()),
 ]

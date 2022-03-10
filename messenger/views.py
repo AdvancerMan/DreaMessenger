@@ -70,3 +70,12 @@ class MyDialoguesView(ListAPIView):
 
     def get_queryset(self):
         return self.request.user.dialogues.all()
+
+
+class MessagesView(ListAPIView):
+    pagination_class = pagination.DefaultPagination
+    serializer_class = serializers.MessageResponseSerializer
+
+    def get_queryset(self):
+        pk = int(self.kwargs['id'])
+        return models.Message.objects.filter(dialogue__pk=pk)
