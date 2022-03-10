@@ -1,20 +1,18 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from messenger import serializers
+from messenger import serializers, pagination, models
 
 
 def create_string_response(response, status=200):
     return Response({"detail": response}, status=status)
 
 
-def create_validation_error_response(message, errors, status=400):
-    response = {}
-    for field, errors in errors.items():
-        response[field] = [str(error) for error in errors]
-    return Response({"detail": message, "errors": response}, status=status)
+def create_validation_error_response(errors, status=400):
+    return Response(errors, status=status)
 
 
 class HelloView(APIView):
@@ -31,7 +29,7 @@ class RegisterView(APIView):
 
         serializer = serializers.RegisterCredentialsSerializer(data=request.data)
         if not serializer.is_valid():
-            return create_validation_error_response("Invalid data", serializer.errors)
+            return create_validation_error_response(serializer.errors)
 
         User.objects.create_user(username=serializer.data['username'],
                                  password=serializer.data['password'],
@@ -49,7 +47,7 @@ class SessionLoginView(APIView):
 
         serializer = serializers.AuthCredentialsSerializer(data=request.data)
         if not serializer.is_valid():
-            return create_validation_error_response("Invalid data", serializer.errors)
+            return create_validation_error_response(serializer.errors)
 
         user = authenticate(username=serializer.data['username'],
                             password=serializer.data['password'])
@@ -64,3 +62,11 @@ class SessionLogoutView(APIView):
     def post(self, request):
         logout(request)
         return create_string_response("Success")
+
+
+class MyDialoguesView(ListAPIView):
+    pagination_class = pagination.DefaultPagination
+    serializer_class = serializers.DialogueResponseSerializer
+
+    def get_queryset(self):
+        return self.request.user.dialogues.all()

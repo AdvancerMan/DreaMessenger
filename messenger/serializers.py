@@ -4,6 +4,8 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from messenger import models
+
 
 class RegisterCredentialsSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, validators=[password_validation.validate_password])
@@ -25,3 +27,17 @@ class AuthCredentialsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password')
+
+
+class UserResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name')
+
+
+class DialogueResponseSerializer(serializers.ModelSerializer):
+    users = UserResponseSerializer(many=True)
+
+    class Meta:
+        model = models.Dialogue
+        fields = ('users',)
