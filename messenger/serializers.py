@@ -3,15 +3,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
 
 from messenger import models
 
 
 class RegisterCredentialsSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, validators=[password_validation.validate_password])
-    first_name = serializers.CharField(max_length=150)
-    last_name = serializers.CharField(max_length=150)
+    first_name = serializers.CharField(max_length=150, min_length=1, allow_blank=False)
+    last_name = serializers.CharField(max_length=150, min_length=1, allow_blank=False)
 
     class Meta:
         model = User
