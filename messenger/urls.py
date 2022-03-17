@@ -13,8 +13,10 @@ urlpatterns = [
     path('auth/register/', messenger.views.RegisterView.as_view()),
 
     path('dialogue/my/', messenger.views.MyDialoguesView.as_view()),
-    path('dialogue/<int:pk>/messages/', messenger.views.MessagesView.as_view()),
+    path('dialogue/<int:pk>/messages/', messenger.views.MessagesByDialogueView.as_view()),
 
     path('user/my/', messenger.views.MyUserView.as_view()),
     path('user/find/<username>/', messenger.views.UserView.as_view()),
+
+    path('picture/<int:pk>/', messenger.views.PictureView.as_view(), name='message-picture'),
 ]

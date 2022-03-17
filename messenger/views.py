@@ -1,5 +1,8 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.shortcuts import get_list_or_404
+from django.views import View
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -72,7 +75,7 @@ class MyDialoguesView(ListAPIView):
         return self.request.user.dialogues.all().order_by('-updated_at')
 
 
-class MessagesView(ListAPIView):
+class MessagesByDialogueView(ListAPIView):
     pagination_class = pagination.DefaultPagination
     serializer_class = serializers.MessageResponseSerializer
 
@@ -81,6 +84,12 @@ class MessagesView(ListAPIView):
         return models.Message.objects\
             .filter(dialogue__pk=pk, dialogue__users=self.request.user)\
             .order_by('-created_at')
+
+
+class PictureView(View):
+    def get(self, request, pk):
+        image = get_list_or_404(models.Picture.objects, pk=pk, messages__dialogue__users=request.user)[0]
+        return HttpResponse(image.data, content_type='image/png')
 
 
 class MyUserView(RetrieveAPIView):

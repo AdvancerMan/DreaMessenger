@@ -1,6 +1,7 @@
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -43,8 +44,20 @@ class DialogueResponseSerializer(serializers.ModelSerializer):
         fields = ('users', 'id')
 
 
+class PictureLinkSerializer(serializers.ModelSerializer):
+    link = serializers.SerializerMethodField('serialize_link')
+
+    def serialize_link(self, picture):
+        return self.context['request'].build_absolute_uri(reverse('message-picture', args=[picture.pk]))
+
+    class Meta:
+        model = models.Picture
+        fields = ('link',)
+
+
 class MessageResponseSerializer(serializers.ModelSerializer):
     from_user = UserResponseSerializer()
+    picture = PictureLinkSerializer()
 
     class Meta:
         model = models.Message
