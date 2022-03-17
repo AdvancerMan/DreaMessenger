@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -81,3 +81,16 @@ class MessagesView(ListAPIView):
         return models.Message.objects\
             .filter(dialogue__pk=pk, dialogue__users=self.request.user)\
             .order_by('-created_at')
+
+
+class MyUserView(RetrieveAPIView):
+    serializer_class = serializers.UserResponseSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+class UserView(RetrieveAPIView):
+    serializer_class = serializers.UserResponseSerializer
+    queryset = User.objects.all()
+    lookup_field = 'username'
