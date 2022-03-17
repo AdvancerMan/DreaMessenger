@@ -4,3 +4,4 @@ from messenger import models
 
 admin.site.register(models.Dialogue)
 admin.site.register(models.Message)
+admin.site.register(models.Picture)
