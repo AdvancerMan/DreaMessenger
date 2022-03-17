@@ -16,5 +16,5 @@ urlpatterns = [
     path('dialogue/<int:pk>/messages/', messenger.views.MessagesView.as_view()),
 
     path('user/my/', messenger.views.MyUserView.as_view()),
-    path('user/<username>/', messenger.views.UserView.as_view()),
+    path('user/find/<username>/', messenger.views.UserView.as_view()),
 ]
