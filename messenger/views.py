@@ -86,7 +86,7 @@ class MessagesByDialogueView(ListAPIView):
             .order_by('-created_at')
 
 
-class DialoguePictureView(View):
+class DialoguePictureView(APIView):
     def get(self, request, pk):
         image = get_list_or_404(models.Picture.objects, pk=pk, messages__dialogue__users=request.user)[0]
         return HttpResponse(image.data, content_type='image/png')
