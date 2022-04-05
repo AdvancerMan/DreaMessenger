@@ -1,9 +1,7 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import get_list_or_404
-from django.views import View
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -88,7 +86,7 @@ class MessagesByDialogueView(ListAPIView):
 
 class DialoguePictureView(APIView):
     def get(self, request, pk):
-        image = get_list_or_404(models.Picture.objects, pk=pk, messages__dialogue__users=request.user)[0]
+        image = get_object_or_404(models.Picture.objects, pk=pk)
         return HttpResponse(image.data, content_type='image/png')
 
 
