@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -107,6 +108,8 @@ class UserView(RetrieveAPIView):
 
 
 class SendDialogueMessageView(APIView):
+    parser_classes = [MultiPartParser]
+
     @transaction.atomic
     def post(self, request, pk):
         dialogue = get_object_or_404(models.Dialogue, pk=pk, users=request.user)
