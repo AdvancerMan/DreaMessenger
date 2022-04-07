@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import HttpResponse
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.response import Response
@@ -103,3 +104,23 @@ class UserView(RetrieveAPIView):
     serializer_class = serializers.UserResponseSerializer
     queryset = User.objects.all()
     lookup_field = 'username'
+
+
+class SendDialogueMessageView(APIView):
+    @transaction.atomic
+    def post(self, request, pk):
+        dialogue = get_object_or_404(models.Dialogue, pk=pk, users=request.user)
+
+        serializer = serializers.PictureSerializer(data=request.data)
+        if not serializer.is_valid():
+            return create_validation_error_response(serializer.errors)
+
+        picture = serializer.save()
+        message = models.Message(
+            dialogue=dialogue,
+            from_user=request.user,
+            picture=picture,
+        )
+        message.save()
+
+        return create_string_response("Ok")
