@@ -64,7 +64,7 @@ class MessageResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Message
-        fields = ('from_user', 'picture', 'is_edited', 'edited_at', 'created_at')
+        fields = ('id', 'from_user', 'picture', 'is_edited', 'edited_at', 'created_at')
 
 
 class PictureSerializer:
