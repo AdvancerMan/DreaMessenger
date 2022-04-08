@@ -92,4 +92,7 @@ class PictureSerializer:
 
     def save(self):
         assert self.cleaned_data is not None, 'Not validated'
-        return models.Picture(data=self.cleaned_data['data']).save()
+
+        picture = models.Picture(data=self.cleaned_data['data'])
+        picture.save()
+        return picture
