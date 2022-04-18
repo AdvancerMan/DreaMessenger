@@ -96,3 +96,47 @@ class PictureSerializer:
         picture = models.Picture(data=self.cleaned_data['data'])
         picture.save()
         return picture
+
+
+class PairDialogueCreateSerializer(serializers.Serializer):
+    with_user = serializers.CharField(
+        max_length=150,
+        help_text=_('Required. Username to create dialogue with. '
+                    '150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[UnicodeUsernameValidator()],
+    )
+
+    def validate(self, attrs):
+        user_matched = User.objects.filter(username=attrs['with_user']).first()
+        if user_matched is None:
+            raise serializers.ValidationError(detail=f"Unknown user {attrs['with_user']}")
+
+        originator = self.context['request'].user
+        if originator == user_matched:
+            raise serializers.ValidationError(detail=f"Self dialogues are prohibited")
+
+        if models.Dialogue.objects.filter(users=user_matched, is_tetatet=True).filter(users=originator).exists():
+            raise serializers.ValidationError(detail="Dialogue already exists")
+
+        return attrs
+
+    def create(self, validated_data):
+        with_user = User.objects.filter(username=validated_data['with_user']).first()
+        originator = self.context['request'].user
+        dialogue = models.Dialogue.objects.create(
+            is_tetatet=True,
+        )
+        dialogue.users.set((originator, with_user))
+
+        return {
+            'with_user': with_user,
+            'dialogue': dialogue,
+        }
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError('Unexpected update of an instance')
+
+    def to_representation(self, instance):
+        return {
+            "dialogue": instance['dialogue'].id
+        }

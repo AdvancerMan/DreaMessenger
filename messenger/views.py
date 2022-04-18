@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse
-from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404, CreateAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -127,3 +127,7 @@ class SendDialogueMessageView(APIView):
         message.save()
 
         return create_string_response("Ok")
+
+
+class CreateDialogueView(CreateAPIView):
+    serializer_class = serializers.PairDialogueCreateSerializer
