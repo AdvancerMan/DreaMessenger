@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.db.models import Value
+from django.db.models.functions import StrIndex
 from django.http import HttpResponse
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404, CreateAPIView
 from rest_framework.parsers import MultiPartParser
@@ -131,3 +133,14 @@ class SendDialogueMessageView(APIView):
 
 class CreateDialogueView(CreateAPIView):
     serializer_class = serializers.PairDialogueCreateSerializer
+
+
+class UserSuggestView(ListAPIView):
+    pagination_class = pagination.DefaultPagination
+    serializer_class = serializers.UserResponseSerializer
+
+    def get_queryset(self):
+        username_substring = self.kwargs['username_substring']
+        return User.objects.filter(username__icontains=username_substring)\
+            .annotate(search_index=StrIndex('username', Value(username_substring)))\
+            .order_by('search_index')
