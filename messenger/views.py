@@ -143,4 +143,4 @@ class UserSuggestView(ListAPIView):
         username_substring = self.kwargs['username_substring']
         return User.objects.filter(username__icontains=username_substring)\
             .annotate(search_index=StrIndex('username', Value(username_substring)))\
-            .order_by('search_index')
+            .order_by('search_index', 'username')
