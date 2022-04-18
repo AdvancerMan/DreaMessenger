@@ -20,4 +20,5 @@ urlpatterns = [
 
     path('user/my/', messenger.views.MyUserView.as_view()),
     path('user/find/<username>/', messenger.views.UserView.as_view()),
+    path('user/suggest/<username_substring>/', messenger.views.UserSuggestView.as_view()),
 ]
