@@ -5,6 +5,7 @@ from django.db import models
 class Dialogue(models.Model):
     users = models.ManyToManyField(User, related_name='dialogues')
     updated_at = models.DateTimeField(auto_now_add=True)
+    is_tetatet = models.BooleanField(default=False)
 
     def __str__(self):
         return 'Dialogue ' + str([user.username for user in self.users.all()])
