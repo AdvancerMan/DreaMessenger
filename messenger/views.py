@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Value, Q, When, Case, Min
-from django.db.models.functions import StrIndex
+from django.db.models import Value, Q, When, Case
+from django.db.models.functions import StrIndex, Least
 from django.http import HttpResponse
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404, CreateAPIView
 from rest_framework.parsers import MultiPartParser
@@ -170,5 +170,5 @@ class UserSuggestView(ListAPIView):
 
         return User.objects.filter(query_condition) \
             .annotate(**str_index_expressions) \
-            .annotate(search_index=Min(*search_index_expressions)) \
+            .annotate(search_index=Least(*search_index_expressions)) \
             .order_by('search_index', 'username')
