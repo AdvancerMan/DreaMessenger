@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Value
+from django.db.models import Value, Q, When, Case, Min
 from django.db.models.functions import StrIndex
 from django.http import HttpResponse
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404, CreateAPIView
@@ -83,8 +83,8 @@ class MessagesByDialogueView(ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs['pk']
-        return models.Message.objects\
-            .filter(dialogue__pk=pk, dialogue__users=self.request.user)\
+        return models.Message.objects \
+            .filter(dialogue__pk=pk, dialogue__users=self.request.user) \
             .order_by('-created_at')
 
 
@@ -140,7 +140,35 @@ class UserSuggestView(ListAPIView):
     serializer_class = serializers.UserResponseSerializer
 
     def get_queryset(self):
-        username_substring = self.kwargs['username_substring']
-        return User.objects.filter(username__icontains=username_substring)\
-            .annotate(search_index=StrIndex('username', Value(username_substring)))\
+        name_substring = self.kwargs['name_substring'].strip()
+
+        fields = [
+            ('username', name_substring, 'default'),
+            ('first_name', name_substring, 'default'),
+            ('last_name', name_substring, 'default'),
+        ]
+        if ' ' in name_substring:
+            fields.append(('first_name', name_substring[:name_substring.index(' ')].strip(), 'space'))
+            fields.append(('last_name', name_substring[name_substring.index(' '):].strip(), 'space'))
+
+        str_index_expressions = {}
+        search_index_expressions = []
+        for field_name, substring, meta_description in fields:
+            index_expression = StrIndex(field_name, Value(substring))
+            str_index_expression_name = f'{field_name}_{meta_description}'
+            str_index_expressions[str_index_expression_name] = index_expression
+            expression = Case(When(**{str_index_expression_name: 0}, then=10 ** 9), default=str_index_expression_name)
+            search_index_expressions.append(expression)
+
+        query_condition = (Q(username__icontains=name_substring) |
+                           Q(first_name__icontains=name_substring) |
+                           Q(last_name__icontains=name_substring))
+        if ' ' in name_substring:
+            query_condition = (query_condition |
+                               Q(first_name__icontains=name_substring[:name_substring.index(' ')].strip()) |
+                               Q(last_name__icontains=name_substring[name_substring.index(' '):].strip()))
+
+        return User.objects.filter(query_condition) \
+            .annotate(**str_index_expressions) \
+            .annotate(search_index=Min(*search_index_expressions)) \
             .order_by('search_index', 'username')
