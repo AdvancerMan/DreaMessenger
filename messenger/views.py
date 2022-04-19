@@ -165,7 +165,7 @@ class UserSuggestView(ListAPIView):
                            Q(last_name__icontains=name_substring))
         if ' ' in name_substring:
             query_condition = (query_condition |
-                               Q(first_name__icontains=name_substring[:name_substring.index(' ')].strip()) |
+                               Q(first_name__icontains=name_substring[:name_substring.index(' ')].strip()) &
                                Q(last_name__icontains=name_substring[name_substring.index(' '):].strip()))
 
         return User.objects.filter(query_condition) \
