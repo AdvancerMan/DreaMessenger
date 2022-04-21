@@ -68,8 +68,16 @@ class DialogueResponseSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
         current_user = self.context['request'].user
-        response['users'] = sorted(response['users'],
-                                   key=lambda x: x['username'] if x['username'] != current_user.username else '')
+
+        additional_users = []
+        main_users = []
+        for user in response['users']:
+            if user['username'] == current_user.username:
+                additional_users.append(user)
+            else:
+                main_users.append(user)
+
+        response['users'] = sorted(main_users, key=lambda x: x['username']) + additional_users
         return response
 
     class Meta:
