@@ -39,7 +39,7 @@ class PictureLinkSerializer(serializers.ModelSerializer):
     link = serializers.SerializerMethodField('serialize_link')
 
     def serialize_link(self, picture):
-        return self.context['request'].build_absolute_uri(reverse('dialogue-picture', args=[picture.uuid]))
+        return self.context['request'].build_absolute_uri(reverse('picture', args=[picture.uuid]))
 
     class Meta:
         model = models.PictureV2

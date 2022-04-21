@@ -90,7 +90,7 @@ class MessagesByDialogueView(ListAPIView):
             .order_by('-created_at')
 
 
-class DialoguePictureView(APIView):
+class PictureView(APIView):
     permission_classes = []
 
     def get(self, request, uuid):
