@@ -100,7 +100,7 @@ class PictureSerializer:
         existing = models.PictureV2.objects.filter(sha256=sha256)
 
         for picture in existing:
-            if picture.data == data:
+            if bytes(picture.data) == data:
                 return picture
         return models.PictureV2.objects.create(uuid=uuid.uuid4(), data=self.cleaned_data['data'], sha256=sha256)
 
