@@ -30,7 +30,8 @@ class Picture(models.Model):
 class Message(models.Model):
     dialogue = models.ForeignKey(Dialogue, on_delete=models.CASCADE, related_name='messages')
     from_user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='messages', blank=True, null=True)
-    picture = models.ForeignKey(Picture, on_delete=models.SET_NULL, related_name='messages', blank=True, null=True)
+    # picture = models.ForeignKey(PictureV2, on_delete=models.SET_NULL, related_name='messages', blank=True, null=True)
+    picture_id = models.UUIDField()
     is_edited = models.BooleanField(default=False)
     edited_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
