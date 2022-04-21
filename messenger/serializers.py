@@ -67,7 +67,7 @@ class DialogueResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Dialogue
-        fields = ('users', 'id')
+        fields = ('users', 'id', 'is_tetatet')
 
 
 class MessageResponseSerializer(serializers.ModelSerializer):

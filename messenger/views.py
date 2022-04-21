@@ -142,7 +142,7 @@ class UserSuggestView(ListAPIView):
     serializer_class = serializers.UserResponseSerializer
 
     def get_queryset(self):
-        name_substring = self.kwargs['name_substring'].strip()
+        name_substring = self.request.query_params.get('name_substring', '').strip()
 
         fields = [
             ('username', name_substring, 'default'),
