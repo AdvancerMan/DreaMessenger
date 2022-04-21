@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -129,6 +131,9 @@ class SendDialogueMessageView(APIView):
             picture=picture,
         )
         message.save()
+
+        dialogue.updated_at = datetime.datetime.utcnow()
+        dialogue.save(update_fields=['updated_at'])
 
         return create_string_response("Ok")
 

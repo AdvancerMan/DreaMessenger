@@ -65,6 +65,13 @@ class UserResponseSerializer(serializers.ModelSerializer):
 class DialogueResponseSerializer(serializers.ModelSerializer):
     users = UserResponseSerializer(many=True)
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        current_user = self.context['request'].user
+        response['users'] = sorted(response['users'],
+                                   key=lambda x: x['username'] if x['username'] != current_user.username else '')
+        return response
+
     class Meta:
         model = models.Dialogue
         fields = ('users', 'id', 'is_tetatet')
