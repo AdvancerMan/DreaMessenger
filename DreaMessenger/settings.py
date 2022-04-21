@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from pathlib import Path
-from dotenv import load_dotenv
+import datetime
 import os
+from pathlib import Path
+
 import dj_database_url
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -130,6 +132,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=int(os.getenv('ACCESS_TOKEN_LIFETIME_SECONDS',
+                                                                      datetime.timedelta(minutes=5).seconds))),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(seconds=int(os.getenv('REFRESH_TOKEN_LIFETIME_SECONDS',
+                                                                       datetime.timedelta(days=1).seconds))),
+}
 
 LOGGING = {
     'version': 1,
