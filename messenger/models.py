@@ -20,13 +20,6 @@ class PictureV2(models.Model):
         return f'Picture with id {self.pk}'
 
 
-class Picture(models.Model):
-    data = models.BinaryField(max_length=1024 * 1024, editable=True)
-
-    def __str__(self):
-        return f'Picture with id {self.pk}'
-
-
 class Message(models.Model):
     dialogue = models.ForeignKey(Dialogue, on_delete=models.CASCADE, related_name='messages')
     from_user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='messages', blank=True, null=True)
