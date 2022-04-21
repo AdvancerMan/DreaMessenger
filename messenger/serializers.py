@@ -1,5 +1,6 @@
 import hashlib
 import io
+import uuid
 
 import PIL.Image
 from django.contrib.auth import password_validation
@@ -101,7 +102,7 @@ class PictureSerializer:
         for picture in existing:
             if picture.data == data:
                 return picture
-        return models.PictureV2.objects.create(data=self.cleaned_data['data'], sha256=sha256)
+        return models.PictureV2.objects.create(uuid=uuid.uuid4(), data=self.cleaned_data['data'], sha256=sha256)
 
 
 class PairDialogueCreateSerializer(serializers.Serializer):
