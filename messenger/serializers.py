@@ -35,20 +35,6 @@ class AuthCredentialsSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
-class UserResponseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name')
-
-
-class DialogueResponseSerializer(serializers.ModelSerializer):
-    users = UserResponseSerializer(many=True)
-
-    class Meta:
-        model = models.Dialogue
-        fields = ('users', 'id')
-
-
 class PictureLinkSerializer(serializers.ModelSerializer):
     link = serializers.SerializerMethodField('serialize_link')
 
@@ -58,6 +44,30 @@ class PictureLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PictureV2
         fields = ('link',)
+
+
+class UserInfoResponseSerializer(serializers.ModelSerializer):
+    avatar = PictureLinkSerializer()
+
+    class Meta:
+        model = models.UserInfo
+        fields = ('avatar',)
+
+
+class UserResponseSerializer(serializers.ModelSerializer):
+    info = UserInfoResponseSerializer()
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'info')
+
+
+class DialogueResponseSerializer(serializers.ModelSerializer):
+    users = UserResponseSerializer(many=True)
+
+    class Meta:
+        model = models.Dialogue
+        fields = ('users', 'id')
 
 
 class MessageResponseSerializer(serializers.ModelSerializer):

@@ -21,4 +21,5 @@ urlpatterns = [
     path('user/my/', messenger.views.MyUserView.as_view()),
     path('user/find/<username>/', messenger.views.UserView.as_view()),
     path('user/suggest/<name_substring>/', messenger.views.UserSuggestView.as_view()),
+    path('user/avatar/', messenger.views.SetUserAvatarView.as_view()),
 ]

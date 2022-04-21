@@ -36,10 +36,12 @@ class RegisterView(APIView):
         if not serializer.is_valid():
             return create_validation_error_response(serializer.errors)
 
-        User.objects.create_user(username=serializer.data['username'],
-                                 password=serializer.data['password'],
-                                 first_name=serializer.data['first_name'],
-                                 last_name=serializer.data['last_name'])
+        user = User.objects.create_user(username=serializer.data['username'],
+                                        password=serializer.data['password'],
+                                        first_name=serializer.data['first_name'],
+                                        last_name=serializer.data['last_name'])
+        models.UserInfo.objects.create(user=user)
+
         return create_string_response("Success")
 
 
@@ -172,3 +174,19 @@ class UserSuggestView(ListAPIView):
             .annotate(**str_index_expressions) \
             .annotate(search_index=Least(*search_index_expressions)) \
             .order_by('search_index', 'username')
+
+
+class SetUserAvatarView(APIView):
+    parser_classes = [MultiPartParser]
+
+    @transaction.atomic
+    def put(self, request):
+        serializer = serializers.PictureSerializer(data=request.data)
+        if not serializer.is_valid():
+            return create_validation_error_response(serializer.errors)
+
+        picture = serializer.save()
+        request.user.info.picture = picture
+        request.user.info.save()
+
+        return create_string_response("Ok")

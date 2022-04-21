@@ -30,3 +30,11 @@ class Message(models.Model):
 
     def __str__(self):
         return f'Message with id {self.pk} from {self.from_user.username} to dialogue {self.dialogue}'
+
+
+class UserInfo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='info')
+    avatar = models.ForeignKey(PictureV2, on_delete=models.SET_NULL, blank=True, null=True, default=None)
+
+    def __str__(self):
+        return f'User info for user {self.user.username}'
