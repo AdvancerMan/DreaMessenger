@@ -180,13 +180,13 @@ class SetUserAvatarView(APIView):
     parser_classes = [MultiPartParser]
 
     @transaction.atomic
-    def put(self, request):
+    def post(self, request):
         serializer = serializers.PictureSerializer(data=request.data)
         if not serializer.is_valid():
             return create_validation_error_response(serializer.errors)
 
         picture = serializer.save()
-        request.user.info.picture = picture
-        request.user.info.save()
+        request.user.info.avatar = picture
+        request.user.info.save(update_fields=['avatar'])
 
         return create_string_response("Ok")
