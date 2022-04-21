@@ -11,6 +11,15 @@ class Dialogue(models.Model):
         return 'Dialogue ' + str([user.username for user in self.users.all()])
 
 
+class PictureV2(models.Model):
+    uuid = models.UUIDField(primary_key=True)
+    data = models.BinaryField(max_length=1024 * 1024)
+    sha256 = models.CharField(max_length=64)
+
+    def __str__(self):
+        return f'Picture with id {self.pk}'
+
+
 class Picture(models.Model):
     data = models.BinaryField(max_length=1024 * 1024, editable=True)
 
