@@ -1,3 +1,4 @@
+import hashlib
 import io
 
 import PIL.Image
@@ -51,10 +52,10 @@ class PictureLinkSerializer(serializers.ModelSerializer):
     link = serializers.SerializerMethodField('serialize_link')
 
     def serialize_link(self, picture):
-        return self.context['request'].build_absolute_uri(reverse('dialogue-picture', args=[picture.pk]))
+        return self.context['request'].build_absolute_uri(reverse('dialogue-picture', args=[picture.uuid]))
 
     class Meta:
-        model = models.Picture
+        model = models.PictureV2
         fields = ('link',)
 
 
@@ -93,9 +94,14 @@ class PictureSerializer:
     def save(self):
         assert self.cleaned_data is not None, 'Not validated'
 
-        picture = models.Picture(data=self.cleaned_data['data'])
-        picture.save()
-        return picture
+        data = self.cleaned_data['data']
+        sha256 = hashlib.sha256(data).hexdigest()
+        existing = models.PictureV2.objects.filter(sha256=sha256)
+
+        for picture in existing:
+            if picture.data == data:
+                return picture
+        return models.PictureV2.objects.create(data=self.cleaned_data['data'], sha256=sha256)
 
 
 class PairDialogueCreateSerializer(serializers.Serializer):

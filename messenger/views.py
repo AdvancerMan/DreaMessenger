@@ -91,8 +91,8 @@ class MessagesByDialogueView(ListAPIView):
 class DialoguePictureView(APIView):
     permission_classes = []
 
-    def get(self, request, pk):
-        image = get_object_or_404(models.Picture.objects, pk=pk)
+    def get(self, request, uuid):
+        image = get_object_or_404(models.PictureV2.objects, uuid=uuid)
         return HttpResponse(image.data, content_type='image/png')
 
 
