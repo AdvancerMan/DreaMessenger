@@ -97,7 +97,7 @@ class PictureView(APIView):
 
     def get(self, request, uuid):
         image = get_object_or_404(models.PictureV2.objects, uuid=uuid)
-        return HttpResponse(image.data, content_type='image/png')
+        return HttpResponse(image.data, content_type='image/jpeg')
 
 
 class MyUserView(RetrieveAPIView):

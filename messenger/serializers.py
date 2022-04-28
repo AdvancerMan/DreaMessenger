@@ -113,7 +113,7 @@ class PictureSerializer:
             return False
 
         img_byte_arr = io.BytesIO()
-        image.save(img_byte_arr, format='JPEG')
+        image.convert('RGB').save(img_byte_arr, format='JPEG')
         self.cleaned_data['data'] = img_byte_arr.getvalue()
         return True
 
