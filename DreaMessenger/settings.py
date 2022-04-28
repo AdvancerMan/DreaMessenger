@@ -135,9 +135,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=int(os.getenv('ACCESS_TOKEN_LIFETIME_SECONDS',
-                                                                      datetime.timedelta(minutes=5).seconds))),
+                                                                      datetime.timedelta(minutes=5).total_seconds()))),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(seconds=int(os.getenv('REFRESH_TOKEN_LIFETIME_SECONDS',
-                                                                       datetime.timedelta(days=1).seconds))),
+                                                                       datetime.timedelta(days=1).total_seconds()))),
 }
 
 LOGGING = {
